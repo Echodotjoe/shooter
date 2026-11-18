@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101318">
+  <meta name="description" content="Deckbreak is a 5v5 first-person robot arena game with four two-floor arenas and a free weapon shop.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%23101318'/%3E%3Cpath d='M5 22l3-7h4l-3 7zm8 0 6-14h4l-6 14zm8 0 4-10h4l-4 10z' fill='%23e8ff78'/%3E%3C/svg%3E">
+  <title>DECKBREAK // 5v5 Arena</title>
+  <script type="module" crossorigin src="./assets/index-WVCzUB7I.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Bncf-aiT.css">
+</head>
+<body>
+  <main id="shell">
+    <header class="top wrap">
+      <a class="wordmark" href="./" aria-label="Deckbreak home"><span class="sigil" aria-hidden="true"><i></i><i></i><i></i></span> DECKBREAK</a>
+      <span class="top-label"><b></b> ARENA SYSTEMS ONLINE</span>
+      <button id="help" class="quiet">Controls <span>?</span></button>
+    </header>
+    <section class="hero wrap" aria-labelledby="title">
+      <div class="hero-art"></div>
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> THE TWO-DECK ARENA SHOOTER</div>
+        <h1 id="title">DECK<span>BREAK</span></h1>
+        <p>Two teams. Two floors. One team standing.</p>
+        <div class="actions"><button id="solo" class="primary">Play with bots <span>↗</span></button><button id="online">Multiplayer <span>↗</span></button><button id="homeShop">Free shop <span>↗</span></button></div>
+      </div>
+      <div class="hero-meta"><span>5V5 // ELIMINATION</span><span>01–04 // ARENA ROTATION</span></div>
+    </section>
+    <section class="rotation wrap" aria-labelledby="arena-title">
+      <div class="section-head"><div><span class="eyebrow"><span></span> MAP SELECT</span><h2 id="arena-title">Arena rotation</h2></div><div class="small">04 ARENAS <b>/</b> 02 FLOORS EACH</div></div>
+      <div id="maps" class="cards" role="group" aria-label="Select an arena"></div>
+    </section>
+    <footer class="wrap"><span>DECKBREAK <b>//</b> ARCADE ARENA</span><span>WASD · MOUSE · R TO RELOAD</span></footer>
+  </main>
+
+  <dialog id="network">
+    <div class="dialog-head"><div><div class="eyebrow"><span></span> PORT 8000 / NETWORK PLAY</div><h2 id="networkTitle">Server browser</h2></div><button class="icon" id="closeNetwork" aria-label="Close multiplayer">×</button></div>
+    <p id="netTip">Connect to a host, then join a room or create your own. Open slots are filled with bots.</p>
+    <div id="endpointPanel">
+      <label for="address">Server address</label>
+      <div class="form-row"><input id="address" placeholder="ws://localhost:8000 or wss://your-server" autocomplete="off" spellcheck="false"><button id="connect">Connect</button></div>
+      <label for="pilot">Pilot name</label><input id="pilot" maxlength="18" placeholder="Pilot" autocomplete="nickname">
+      <div class="list-head"><h3>Available rooms</h3><button id="refresh" class="quiet">Refresh</button></div>
+      <div id="rooms" class="rooms"></div>
+      <form id="createRoom">
+        <label for="roomName">New room <span id="roomMap"></span></label>
+        <div class="form-row"><input id="roomName" maxlength="26" placeholder="Room name" autocomplete="off"><button class="primary" id="create" disabled>Create room</button></div>
+      </form>
+    </div>
+    <div id="lobby" hidden>
+      <div class="info-strip" id="lobbyInfo"></div>
+      <div id="rosters"></div>
+      <div class="actions"><button id="startRoom" class="primary">Start round <span>↗</span></button><button id="leaveRoom">Leave room</button><button id="lobbyShop">Free shop</button></div>
+    </div>
+    <div id="netStatus" class="status" role="status"></div>
+  </dialog>
+
+  <dialog id="controls">
+    <div class="dialog-head"><div><div class="eyebrow"><span></span> PILOT MANUAL</div><h2>Controls</h2></div><button class="icon" id="closeHelp" aria-label="Close controls">×</button></div>
+    <dl><dt>Move</dt><dd><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></dd><dt>Aim</dt><dd>Mouse or arrow keys</dd><dt>Fire</dt><dd>Left click or <kbd>Space</kbd></dd><dt>Reload</dt><dd><kbd>R</kbd></dd><dt>Sprint</dt><dd><kbd>Shift</kbd></dd><dt>Free shop</dt><dd><kbd>B</kbd></dd><dt>Sniper zoom</dt><dd>Right click or <kbd>Z</kbd></dd><dt>Pause / match menu</dt><dd><kbd>Esc</kbd></dd><dt>Fullscreen</dt><dd><kbd>F</kbd></dd></dl>
+    <p>Eliminate all five opponents to win. There are no respawns during a round. Follow the light strips on the ramps to switch floors.</p>
+    <p>Touch: use the left pad to move, drag the right side to aim, and use the on-screen fire and reload buttons.</p>
+  </dialog>
+
+  <dialog id="shop" aria-labelledby="shopTitle" aria-describedby="shopTip">
+    <div class="dialog-head"><div><div class="eyebrow"><span></span> LOADOUT / ALL GEAR FREE</div><h2 id="shopTitle">Free shop</h2></div><button class="icon" id="closeShop" aria-label="Close free shop">×</button></div>
+    <p id="shopTip"></p>
+    <div id="gearList"></div>
+    <div class="shop-footer"><div id="shopStatus" role="status"></div><button id="shopDone" class="primary">Done <span>↗</span></button></div>
+  </dialog>
+
+  <section id="game" aria-label="Deckbreak match" hidden>
+    <canvas id="screen"></canvas>
+    <div class="game-overlay">
+      <div id="hit"></div><div id="damage"></div>
+      <div class="matchbar"><div class="team blue"><span>COBALT</span><strong id="blue">5</strong></div><div class="match-clock"><span id="timer">4:00</span><small>ELIMINATION</small></div><div class="team red"><strong id="red">5</strong><span>EMBER</span></div></div>
+      <div class="map-status"><span id="gameMap"></span><strong id="floor"></strong></div>
+      <button id="pauseButton" class="icon" aria-label="Pause or open match menu">Ⅱ</button>
+      <div id="escapeHint" aria-hidden="true">B / SHOP &nbsp; ESC / MENU</div>
+      <div id="crosshair" aria-hidden="true"></div>
+      <div id="feed"></div>
+      <div class="hud-bottom">
+        <div class="hud-box"><span>INTEGRITY</span><strong id="hp">100</strong><div class="hp-track"><i id="hpBar"></i></div></div>
+        <div id="spec" hidden>SPECTATING AN ALLY</div>
+        <div class="hud-box ammo"><div class="ammo-line"><span id="weapon">PULSE CARBINE</span><button id="hudShop" aria-label="Open free shop">SHOP</button></div><strong><i id="mag">24</i><small id="magLimit"> / 24</small></strong></div>
+      </div>
+      <div id="perf">-- FPS</div>
+    </div>
+    <div id="touchPad" aria-label="Movement pad"><i></i></div>
+    <div class="touch-actions"><button id="touchZoom" hidden>Zoom</button><button id="touchFire">Fire</button><button id="touchReload">Reload</button></div>
+    <div id="gameCurtain" hidden>
+      <div class="curtain-panel">
+        <div id="curtainTag" class="eyebrow"><span></span> ROUND CONTROL</div>
+        <h2 id="curtainTitle">Match paused</h2>
+        <p id="curtainCopy"></p>
+        <div class="actions"><button id="continue" class="primary">Resume <span>↗</span></button><button id="quit">Main menu</button><button id="menuShop">Free shop</button></div>
+      </div>
+    </div>
+  </section>
+  <div id="notice" role="status" hidden></div>
+  <script>window.DECKBREAK_PREVIEW = "__PORT_8000__";</script>
+</body>
+</html>
